@@ -35,13 +35,13 @@ async function connectToOracle() {
      FROM UTILISATEUR`
   );
   
-  console.log(result.rows);
+  // console.log(result.rows);
 
-    // Affichage des résultats
-    console.log('Méta-données des résultats :');
-    result.rows.forEach(item => {
-      console.log(item);
-  });
+  //   // Affichage des résultats
+  //   console.log('Méta-données des résultats :');
+  //   result.rows.forEach(item => {
+  //     console.log(item);
+  // });
 
   } catch (err) {
     console.error('Erreur lors de la connexion ou de l\'exécution de la requête :', err);

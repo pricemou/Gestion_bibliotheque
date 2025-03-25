@@ -5,13 +5,13 @@ const userController = require('../controllers/userController');
 const router = express.Router();
 
 // Page d'accueil
-router.get('/', (req, res) => {
-  res.render('home');
-});
+// router.get('/', (req, res) => {
+//   res.render('home');
+// });
 
 
 // Liste des utilisateurs
-router.get('/users', userController.getUsers);
+router.get('/', userController.getUsers);
 
 // Détails d'un utilisateur
 router.get('/users/:id', userController.getUserById);
