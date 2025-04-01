@@ -11,12 +11,16 @@ const router = express.Router();
 
 
 // Liste des utilisateurs
-router.get('/', userController.getUsers);
+router.get('/users', userController.getUsers);
+router.get('/documents', userController.getDocuments);
+router.post('/documents/add', userController.addDocument);
+router.get('/reservations', userController.getReservation);
+router.get('/emprunts', userController.getEmprunt);
 
 // Détails d'un utilisateur
-router.get('/users/:id', userController.getUserById);
+// router.get('/users/:id', userController.getUserById);
 
 // Route pour la recherche
-router.get('/search', userController.searchBooks);
+// router.get('/search', userController.searchBooks);
 
 module.exports = router;

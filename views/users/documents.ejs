@@ -1,0 +1,159 @@
+<%- include('../components/entete') %>
+
+<body class="g-sidenav-show  bg-gray-100">
+  <!-- <%- include('../components/header') %>-->
+
+
+  <%- include('../components/navbar-vertical') %>
+
+
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <%- include('../components/navbar') %>
+
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-header pb-0">
+              <h6>Tableau des documents</h6>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+              <div class="table-responsive p-0">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6>Tableau des documents</h6>
+                    <button class="btn btn-primary" onclick="openAddDocumentModal()">Ajouter un document</button>
+                  </div>
+
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Titre</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Auteur</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ISBN</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Catégorie</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Exemplaires</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Disponibilité</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% documents.forEach(document => { %>
+                    <tr>
+                      <td><%= document.TITRE %></td>
+                      <td><%= document.AUTEUR ? document.AUTEUR : 'N/A' %></td>
+                      <td><%= document.ISBN ? document.ISBN : 'N/A' %></td>
+                      <td><%= document.CATEGORIE ? document.CATEGORIE : 'Non classé' %></td>
+                      <td><%= document.NOMBREEXEMPLAIRES %></td>
+                      <td>
+                        <% if (document.DISPONIBLE === 1) { %>
+                        <span class="badge badge-sm bg-gradient-success">Disponible</span>
+                        <% } else { %>
+                        <span class="badge badge-sm bg-gradient-danger">Indisponible</span>
+                        <% } %>
+                      </td>
+                    </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%- include('../components/footer') %>
+
+    </div>
+
+  </main>
+
+  <!-- Modal pour ajouter un document -->
+<div id="addDocumentModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ajouter un document</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="addDocumentForm">
+            <div class="form-group">
+              <label for="titre">Titre</label>
+              <input type="text" id="titre" name="titre" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="auteur">Auteur</label>
+              <input type="text" id="auteur" name="auteur" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="isbn">ISBN</label>
+              <input type="text" id="isbn" name="isbn" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="categorie">Catégorie</label>
+              <input type="text" id="categorie" name="categorie" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="nombreExemplaires">Nombre d'exemplaires</label>
+              <input type="number" id="nombreExemplaires" name="nombreExemplaires" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="disponible">Disponible</label>
+              <select id="disponible" name="disponible" class="form-control">
+                <option value="1">Oui</option>
+                <option value="0">Non</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success">Ajouter</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+    function openAddDocumentModal() {
+      $('#addDocumentModal').modal('show');
+    }
+  
+    $(document).ready(function () {
+      $('#addDocumentForm').submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: '/documents/add',
+          type: 'POST',
+          data: $(this).serialize(),
+          success: function (response) {
+            alert('Document ajouté avec succès !');
+            location.reload();
+          },
+          error: function (error) {
+            alert('Erreur lors de l\'ajout du document.');
+          }
+        });
+      });
+    });
+  </script>
+
+  <!--   Core JS Files   -->
+  <script src="/js/core/popper.min.js"></script>
+  <script src="/js/core/bootstrap.min.js"></script>
+  <script src="/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="/js/plugins/smooth-scrollbar.min.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <script src="/js/soft-ui-dashboard.min.js?v=1.1.0"></script>
+</body>
+
+</html>
