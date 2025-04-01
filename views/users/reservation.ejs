@@ -1,69 +1,136 @@
 <%- include('../components/entete') %>
 
-<body class="g-sidenav-show  bg-gray-100">
-  <!-- <%- include('../components/header') %>-->
-
+<body class="g-sidenav-show bg-gray-100">
   <%- include('../components/navbar-vertical') %>
 
-  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <!-- Navbar -->
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
     <%- include('../components/navbar') %>
-    <!-- End Navbar -->
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">
-          <div class="card mb-4">
-            <div class="card-header pb-0">
-              <h6>Tableau des Réservations</h6> 
-            </div>
-            <div class="card-body px-0 pt-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Prénom</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Adresse</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date d'inscription</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% reservations.forEach(reservation => { %>
-                      <tr>
-                        <td><%= reservation.nom %></td>
-                        <td><%= reservation.prenom %></td>
-                        <td><%= reservation.email %></td>
-                        <td><%= reservation.adresse %></td>
-                        <td><%= reservation.dateInscription %></td>
-                      </tr>
-                    <% }); %>
-                  </tbody>
-                </table>
+           <div class="card mb-4">
+              <div class="card-header pb-0">
+                 <h6>Tableau des Réservations</h6>
+                 <div class="d-flex justify-content-end mb-3">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reservationModal">
+                       Ajouter une réservation
+                    </button>
+                 </div>
               </div>
-            </div>
-          </div>
+              <div class="card-body px-0 pt-0 pb-2">
+                 <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                       <thead>
+                          <tr>
+                             <th>Nom</th>
+                             <th>Prénom</th>
+                             <th>Email</th>
+                             <th>Adresse</th>
+                             <th>Date d'inscription</th>
+                          </tr>
+                       </thead>
+                       <tbody>
+                        <% reservations.forEach(reservation => { %>
+                          <tr>
+                            <td><%= reservation.NOM %></td>
+                            <td><%= reservation.PRENOM %></td>
+                            <td><%= reservation.TITRE %></td>
+                            <!-- Formatage de la date de réservation -->
+                            <td><%= new Date(reservation.DATERESERVATION).toLocaleDateString() %></td>
+                            <!-- Formatage de la date d'expiration -->
+                            <td><%= new Date(reservation.DATEEXPIRATION).toLocaleDateString() %></td>
+                            <td><%= reservation.STATUT %></td>
+                          </tr>
+                        <% }); %>
+                      </tbody>
+                      
+                    </table>
+                 </div>
+              </div>
+           </div>
         </div>
-      </div>
+     </div>
+     
   </main>
 
-  <!--   Core JS Files   -->
-  <script src="/js/core/popper.min.js"></script>
-  <script src="/js/core/bootstrap.min.js"></script>
-  <script src="/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="/js/plugins/smooth-scrollbar.min.js"></script>
+  <!-- Modal de réservation -->
+  <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reservationModalLabel">Créer une réservation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reservationForm">
+                    <div class="mb-3">
+                        <label for="idUtilisateur" class="form-label">Utilisateur</label>
+                        <select class="form-control" id="idUtilisateur" required>
+                            <% users.forEach(user => { %>
+                                <option value="<%= user.IDUTILISATEUR %>"><%= user.NOM %> <%= user.PRENOM %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="idDocument" class="form-label">Document</label>
+                        <select class="form-control" id="idDocument" required>
+                            <% documents.forEach(doc => { %>
+                                <option value="<%= doc.IDDOCUMENT %>"><%= doc.TITRE %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dateExpiration" class="form-label">Date d'expiration</label>
+                        <input type="date" class="form-control" id="dateExpiration" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="statut" class="form-label">Statut</label>
+                        <select class="form-control" id="statut" required>
+                            <option value="En attente">En attente</option>
+                            <option value="Confirmée">Confirmée</option>
+                            <option value="Annulée">Annulée</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Réserver</button>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
   <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <script src="/js/soft-ui-dashboard.min.js?v=1.1.0"></script>
-</body>
+    $(document).ready(function () {
+        $('#reservationForm').submit(function (e) {
+            e.preventDefault();
+            const reservationData = {
+                idUtilisateur: $('#idUtilisateur').val(),
+                idDocument: $('#idDocument').val(),
+                dateExpiration: $('#dateExpiration').val(),
+                statut: $('#statut').val()
+            };
 
+            $.ajax({
+                url: '/reservations/add',
+                type: 'POST',
+                contentType: "application/json", // Envoie les données en JSON
+                data: JSON.stringify(reservationData), // Convertit l'objet en JSON
+                success: function (response) {
+                    alert('Réservation ajoutée avec succès !');
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error('Erreur détaillée:', error); // Affiche les détails de l'erreur
+                    alert('Erreur lors de l\'ajout de la réservation.');
+                }
+            });
+
+            console.log("Données envoyées :", JSON.stringify(reservationData)); // Pour vérifier
+
+        });
+    });
+</script>
+
+  <%- include('../components/footer') %>
+
+
+</body>
 </html>

@@ -1,75 +1,153 @@
 <%- include('../components/entete') %>
 
-<body class="g-sidenav-show  bg-gray-100">
+<body class="g-sidenav-show bg-gray-100">
   <%- include('../components/navbar-vertical') %>
 
-  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
     <%- include('../components/navbar') %>
+
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
               <h6>Tableau des Emprunts</h6>
+              <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#empruntModal">
+                  Ajouter un emprunt
+                </button>
+              </div>
             </div>
+
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Prénom</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Document</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Emprunt</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Retour Prévue</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Retour Effective</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Retard</th>
+                      <th>Nom</th>
+                      <th>Prénom</th>
+                      <th>Document</th>
+                      <th>Date Emprunt</th>
+                      <th>Date Retour Prévue</th>
+                      <th>Date Retour Effective</th>
+                      <th>Retard</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <% emprunts.forEach(emprunt => { %>
+                    <% if (emprunts.length > 0) { %>
+                      <% emprunts.forEach(emprunt => { %>
+                        <tr>
+                          <td><%= emprunt.NOM %></td>
+                          <td><%= emprunt.PRENOM %></td>
+                          <td><%= emprunt.TITRE %></td>
+                          <td>
+                            <%= emprunt.DATEEMPRUNT ? new Date(emprunt.DATEEMPRUNT).toISOString().split('T')[0] : 'Date non spécifiée' %>
+                          </td>
+                          <td>
+                            <%= emprunt.DATERETOURPREVUE ? new Date(emprunt.DATERETOURPREVUE).toISOString().split('T')[0] : 'Date non spécifiée' %>
+                          </td>
+                          <td>
+                            <%= emprunt.DATERETOUREFFECTIVE ? new Date(emprunt.DATERETOUREFFECTIVE).toISOString().split('T')[0] : 'Non retourné' %>
+                          </td>
+                          <td>
+                            <% if (emprunt.ENRETARD == 1) { %>
+                              <span class="badge badge-danger">En retard</span>
+                            <% } else { %>
+                              <span class="badge badge-success">À temps</span>
+                            <% } %>
+                          </td>
+                        </tr>
+                      <% }); %>
+                    <% } else { %>
                       <tr>
-                        <td><%= emprunt.nom %></td>
-                        <td><%= emprunt.prenom %></td>
-                        <td><%= emprunt.titre %></td>
-                        <td><%= emprunt.dateEmprunt.toISOString().split('T')[0] %></td>
-                        <td><%= emprunt.dateRetourPrevue.toISOString().split('T')[0] %></td>
-                        <td><%= emprunt.dateRetourEffective ? emprunt.dateRetourEffective.toISOString().split('T')[0] : 'Non retourné' %></td>
-                        <td>
-                          <% if (emprunt.enRetard == 1) { %>
-                            <span class="badge badge-danger">En retard</span>
-                          <% } else { %>
-                            <span class="badge badge-success">À temps</span>
-                          <% } %>
-                        </td>
+                        <td colspan="7" class="text-center">Aucun emprunt trouvé</td>
                       </tr>
-                    <% }); %>
+                    <% } %>
                   </tbody>
+                  
+                  
+                  
                 </table>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Modal d'ajout d'emprunt -->
+    <div class="modal fade" id="empruntModal" tabindex="-1" aria-labelledby="empruntModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="empruntModalLabel">Créer un Emprunt</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="empruntForm">
+              <div class="mb-3">
+                <label for="idUtilisateur" class="form-label">Utilisateur</label>
+                <select class="form-select" id="idUtilisateur" required>
+                  <% users.forEach(user => { %>
+                    <option value="<%= user.IDUTILISATEUR %>"><%= user.NOM %> <%= user.PRENOM %></option>
+                <% }); %>
+                </select>
+
+                
+              </div>
+              <div class="mb-3">
+                <label for="idDocument" class="form-label">Document</label>
+                <select class="form-select" id="idDocument" required>
+                  <% documents.forEach(doc => { %>
+                    <option value="<%= doc.IDDOCUMENT %>"><%= doc.TITRE %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="dateRetourPrevue" class="form-label">Date Retour Prévue</label>
+                <input type="date" class="form-control" id="dateRetourPrevue" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Ajouter l'emprunt</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
-  <!--   Core JS Files   -->
-  <script src="/js/core/popper.min.js"></script>
-  <script src="/js/core/bootstrap.min.js"></script>
-  <script src="/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="/js/plugins/smooth-scrollbar.min.js"></script>
   <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <script src="/js/soft-ui-dashboard.min.js?v=1.1.0"></script>
-</body>
+    $(document).ready(function () {
+      $('#empruntForm').submit(function (e) {
+        e.preventDefault(); // Empêche le rechargement de la page
+  
+        const empruntData = {
+          idUtilisateur: $('#idUtilisateur').val(),
+          idDocument: $('#idDocument').val(),
+          dateRetourPrevue: $('#dateRetourPrevue').val()
+        };
 
+        console.log("data :",empruntData);
+        
+  
+        $.ajax({
+          url: '/emprunts/add',
+          type: 'POST',
+          contentType: "application/json", // Envoie les données en JSON
+          data: JSON.stringify(empruntData),
+          success: function (response) {
+            alert('Emprunt ajouté avec succès !');
+            location.reload(); // Recharge la page pour afficher le nouvel emprunt
+          },
+          error: function (error) {
+            alert('Erreur lors de l\'ajout de l\'emprunt.');
+          }
+        });
+      });
+    });
+  </script>
+  
+
+  <%- include('../components/footer') %>
+</body>
 </html>

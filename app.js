@@ -1,11 +1,17 @@
 // app.js
 const express = require('express');
-const app = express();
 const catMe = require("cat-me");
 const path = require('path');
+const bodyParser = require('body-parser');
 const oracledb = require('oracledb');
+const cors = require('cors');
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
+const app = express();
+app.use(cors()); 
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Informations de connexion
 const connectionConfig = {
@@ -63,10 +69,10 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Middleware pour servir les fichiers statiques
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Middleware pour parser les données des formulaires
-app.use(express.urlencoded({ extended: true }));
+
 
 // Routes
 const indexRoutes = require('./routes/indexRoutes');
@@ -76,7 +82,7 @@ app.use('/', indexRoutes);
 console.log(catMe());
 
 // connectToOracle();
-
+app.use(cors()); // Autorise les requêtes cross-origin si nécessaire
 // Démarrer le serveur
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
