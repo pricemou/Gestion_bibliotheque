@@ -18,6 +18,7 @@ router.get('/reservations', userController.getReservation);
 router.post('/reservations/add', userController.addReservation)
 router.get('/emprunts', userController.getEmprunt);
 router.post('/emprunts/add', userController.addEmprunts);
+router.get('/emprunts', userController.getEmprunt);
 
 // Détails d'un utilisateur
 // router.get('/users/:id', userController.getUserById);
